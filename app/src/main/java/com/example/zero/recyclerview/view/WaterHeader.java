@@ -78,7 +78,6 @@ public class WaterHeader extends LinearLayout implements BaseRefreshHeader {
         if (getVisibleHeight() > 0 || delta > 0) {
             setVisiableHeight((int) delta + getVisibleHeight());
             if (mState <= STATE_RELEASE_TO_REFRESH) { // 未处于刷新状态,进行水滴的拉伸的变化
-                /**此处进行水滴下拉变化*/
                 //计算显示比例 -- 减去直径，距离顶部的距离
                 percent = (getVisibleHeight() - 2 * mWaterDropView.getTopCircle().getRadius() - 30) / mMeasuredHeight;
                 mWaterDropView.updateComleteState(percent);
@@ -162,17 +161,14 @@ public class WaterHeader extends LinearLayout implements BaseRefreshHeader {
         int height = getVisibleHeight();
         if (height == 0) // not visible.
             isOnRefresh = false;
-//        if (getVisibleHeight() > mMeasuredHeight && mState < STATE_REFRESHING) {//改成通过水滴完成度判断
         if (percent >= 1 && mState < STATE_REFRESHING) {
             setState(STATE_REFRESHING);
             isOnRefresh = true;
         }
-        // refreshing and header isn't shown fully. do nothing.
         if (mState == STATE_REFRESHING && height <= mMeasuredHeight) {
             //return;
         }
-        int destHeight = 0; // default: scroll back to dismiss header.
-        // is refreshing, just scroll back to show all the header.
+        int destHeight = 0;
         if (mState == STATE_REFRESHING) {//重复刷新拦截放在外面,这里用于下拉到抵自动刷新
             destHeight = mMeasuredHeight;
             isOnRefresh = true;

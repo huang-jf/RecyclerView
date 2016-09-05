@@ -22,7 +22,7 @@ import java.util.List;
 public class XRecyclerView extends RecyclerView {
 
     private boolean isLoadingData = false;
-    private boolean isNoMore = false;//没有更多
+    private boolean isNoMore = false;
     private int mRefreshProgressStyle = ProgressStyle.BallSpinFadeLoader;
     private int mLoadingMoreProgressStyle = ProgressStyle.BallRotate;
     private ArrayList<View> mHeaderViews = new ArrayList<>();
@@ -96,20 +96,10 @@ public class XRecyclerView extends RecyclerView {
 
     @Deprecated
     public void loadMoreComplete() {
-        //停止使用这个方法，当 onItemRangeInserted 回调时相当于数据加载完成 需要Adapter的配合 TODO 删除
-        /*isLoadingData = false;
-        if (mFootView instanceof LoadingMoreFooter) {
-            ((LoadingMoreFooter) mFootView).setState(LoadingMoreFooter.STATE_COMPLETE);
-        } else {
-            mFootView.setVisibility(View.GONE);
-        }*/
     }
 
     @Deprecated
     public void refreshComplete() {
-        //停止使用这个方法，当 onChanged 回调时相当于数据加载完成 需要Adapter的配合 TODO 删除
-        /*mRefreshHeader.refreshComplete();
-        setNoMore(false);*/
     }
 
     public void setNoMore(boolean noMore) {
@@ -259,16 +249,8 @@ public class XRecyclerView extends RecyclerView {
         }
     }
 
-    //手动调用数据观测 -- 头部底部可能影响空视图判断
-    @Deprecated
-    public void observeDataChange() {
-        // TODO: 2016/8/24 恢复
-//        mDataObserver.onChanged();
-    }
-
     /**
      * 包装头部、脚部View的Adapter
-     * TODO
      * 如果对传入的Adapter包装进行包装，数据变动时，不能直接在被包装的Adapter里面直接调用Notify的方法
      * 否则当包装进入头部和脚部时，激活的数据的起始位置可能计算错误
      * 所以我们需要在新的包装后的Adapter里面进行Notifyu操作
@@ -448,16 +430,14 @@ public class XRecyclerView extends RecyclerView {
         }
 
 
-        //传入的Adapter调用的方法 TODO
+        //传入的Adapter调用的方法
         @Override
         public void notifyDataSetChanged1() {
             Adapter<?> adapter = getAdapter();
             if (adapter != null && mEmptyView != null) {
                 //没有列表数据，有头部数据 -- 不显示的情况
                 int emptyCount = 0;
-//                if (pullRefreshEnabled) {
                 emptyCount++;
-//                }
                 if (loadingMoreEnabled) {
                     emptyCount++;
                 }
@@ -473,6 +453,7 @@ public class XRecyclerView extends RecyclerView {
             if (mWrapAdapter != null) {
                 mWrapAdapter.notifyDataSetChanged();
             }
+            this.adapter.notifyDataSetChanged();
             //结束结束刷新动画的操作
             mRefreshHeader.refreshComplete();
             setNoMore(false);
